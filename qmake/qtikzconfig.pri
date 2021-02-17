@@ -40,10 +40,10 @@
 #MAN_INSTALL_DIR = $${PREFIX}/share/man
 
 # compile in debug mode:
-#CONFIG += debug
+CONFIG += debug
 # compile in release mode:
-CONFIG -= debug
-CONFIG += release
+#CONFIG -= debug
+#CONFIG += release
 
 # Qt commands (uncomment if needed)
 # qmake command:
@@ -51,7 +51,7 @@ CONFIG += release
 # lrelease command:
 #LRELEASECOMMAND = lrelease-qt5
 # qcollectiongenerator command:
-#QCOLLECTIONGENERATORCOMMAND = qcollectiongenerator
+greaterThan(QT_MAJOR_VERSION, 5) QCOLLECTIONGENERATORCOMMAND = qhelpgenerator
 
 # TikZ documentation default file path:
 TIKZ_DOCUMENTATION_DEFAULT = "/usr/share/doc/texmf/pgf/pgfmanual.pdf.gz"

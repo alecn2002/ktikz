@@ -74,8 +74,12 @@ void LineNumberWidget::paintEvent(QPaintEvent *event)
 			{
 				if (userBookmarks.at(i) == lineNumber)
 				{
-					painter.fillRect(2, top, fm.width(QLatin1Char('B')) + 4, lineHeight, m_highlightBrush);
-					painter.setPen(m_highlightedTextPen);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                    painter.fillRect(2, top, fm.horizontalAdvance(QLatin1Char('B')) + 4, lineHeight, m_highlightBrush);
+#else
+                    painter.fillRect(2, top, fm.width(QLatin1Char('B')) + 4, lineHeight, m_highlightBrush);
+#endif
+                    painter.setPen(m_highlightedTextPen);
 					painter.drawText(4, top, width() - 4, lineHeight, Qt::AlignLeft | Qt::AlignTop, QLatin1String("B"));
 					painter.setPen(m_highlightPen);
 //					update(0, top, width(), lineHeight); // make sure the bookmark is visible even when the line is wrapped
@@ -97,7 +101,7 @@ void LineNumberWidget::paintEvent(QPaintEvent *event)
 void LineNumberWidget::mousePressEvent(QMouseEvent *event)
 {
 	event->accept();
-	const QPoint p = m_editor->viewport()->mapFromGlobal(event->globalPos());
+    const QPoint p = m_editor->viewport()->mapFromGlobal(event->globalPos());
 	const int lineNumber = m_editor->cursorForPosition(p).blockNumber() + 1;
 	if (lineNumber <= 0)
 		return;

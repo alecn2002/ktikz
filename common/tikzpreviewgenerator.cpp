@@ -30,7 +30,12 @@
 #include <QtCore/QProcess>
 #include <QtCore/QTextStream>
 #include <QtGui/QPixmap>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtCore/QStandardPaths>
+#include <QtWidgets/QPlainTextEdit>
+#include <QtCore5Compat/QRegExp>
+#include <poppler-qt6.h>
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtCore/QStandardPaths>
 #include <QtWidgets/QPlainTextEdit>
 #include <poppler-qt5.h>
@@ -180,7 +185,7 @@ static QString getParsedLogText(QTextStream *logStream)
 {
 	QString logText;
 
-	QRegExp errorPattern(QLatin1String("(\\S*):(\\d+): (.*$)"));
+    QRegExp errorPattern(QLatin1String("(\\S*):(\\d+): (.*$)"));
 	QList<QLatin1String> errorMessageList;
 	errorMessageList << QLatin1String("Undefined control sequence")
 	                 << QLatin1String("LaTeX Warning:") << QLatin1String("LaTeX Error:")
@@ -450,7 +455,7 @@ static QString createTempLatexFile(const QString &tikzFileBaseName, const QStrin
 		"\\makeatother");
 
 	File tikzTexFile(tikzFileBaseName + QLatin1String(".tex"), File::WriteOnly);
-	if (!tikzTexFile.open())
+    if (!tikzTexFile.open())
 		return tikzTexFile.errorString();
 
 	QTextStream tikzStream(tikzTexFile.file());
@@ -508,7 +513,7 @@ static QString createTempTikzFile(const QString &tikzFileBaseName, const QString
 	QTextStream tikzStream(&tikzFile);
 	codecProfile->configureStreamEncoding(tikzStream);
 
-	tikzStream << tikzCode << endl;
+    tikzStream << tikzCode << Qt::endl;
 	tikzStream.flush();
 
 	tikzFile.close();

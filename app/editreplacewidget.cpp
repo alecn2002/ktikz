@@ -29,6 +29,9 @@
 
 #include "../common/utils/icon.h"
 #include "../common/utils/lineedit.h"
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtGui/qtextdocument.h>
+#endif
 
 ReplaceWidget::ReplaceWidget(QWidget *parent) : QWidget(parent)
 {
@@ -100,7 +103,11 @@ void ReplaceWidget::doFind()
 	if (ui.comboBoxFind->findText(currentText) < 0)
 		ui.comboBoxFind->addItem(currentText);
 
-	QTextDocument::FindFlags flags = 0;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QTextDocument::FindFlags flags = QTextDocument::FindFlags();
+#else
+    QTextDocument::FindFlags flags = 0;
+#endif
 	if (ui.checkBoxCaseSensitive->isChecked())
 		flags |= QTextDocument::FindCaseSensitively;
 	if (ui.checkBoxWholeWords->isChecked())
@@ -121,7 +128,11 @@ void ReplaceWidget::doReplace()
 	if (ui.comboBoxReplace->findText(replacementText) < 0)
 		ui.comboBoxReplace->addItem(replacementText);
 
-	QTextDocument::FindFlags flags = 0;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QTextDocument::FindFlags flags = QFlags<QTextDocument::FindFlag>();
+#else
+    QTextDocument::FindFlags flags = 0;
+#endif
 	if (ui.checkBoxCaseSensitive->isChecked())
 		flags |= QTextDocument::FindCaseSensitively;
 	if (ui.checkBoxWholeWords->isChecked())

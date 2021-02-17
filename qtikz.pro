@@ -33,7 +33,7 @@ unix:!macx {
 	message(The man page will be installed in)
 	message("  $${MAN_INSTALL_DIR}")
 }
-message()
+message(" ")
 message("If you would like to change these paths,")
 message("please adjust qtikzconfig.pri to your needs and rerun qmake.")
 

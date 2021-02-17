@@ -41,6 +41,9 @@
 #include <QtGui/QPalette>
 #include <QtGui/QTextBlock>
 #include <QtGui/QTextLayout>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtCore5Compat/QRegExp>
+#endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtWidgets/QAbstractItemView>
 #include <QtWidgets/QApplication>
@@ -58,7 +61,7 @@
 
 #include "linenumberwidget.h"
 
-static const QString s_completionPlaceHolder(0x2022);
+static const QString s_completionPlaceHolder(QChar(0x2022));
 
 TikzEditor::TikzEditor(QWidget *parent)
 	: QPlainTextEdit(parent)
@@ -314,7 +317,11 @@ void TikzEditor::paintSpace(QPainter &painter, qreal x, qreal y, int spaceWidth)
 void TikzEditor::printWhiteSpaces(QPainter &painter)
 {
 	const QFontMetrics fontMetrics = QFontMetrics(document()->defaultFont());
-	const int spaceWidth = fontMetrics.width(QLatin1Char(' '));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    const int spaceWidth = fontMetrics.horizontalAdvance(QLatin1Char(' '));
+#else
+    const int spaceWidth = fontMetrics.width(QLatin1Char(' '));
+#endif
 	const int fontHeight = fontMetrics.height();
 	QTextCursor cursor = textCursor();
 
@@ -511,7 +518,7 @@ void TikzEditor::keyPressEvent(QKeyEvent *event)
 	{
 		QTextCursor cursor = textCursor();
 		QTextBlock block = cursor.block();
-		QTextDocument::FindFlags flags = 0;
+        QTextDocument::FindFlags flags = QFlags<QTextDocument::FindFlag>();
 		if (event->key() == Qt::Key_Backtab)
 			flags = QTextDocument::FindBackward;
 		if (cursor.hasSelection() && cursor.selectedText().contains(QChar::ParagraphSeparator))
@@ -634,8 +641,13 @@ void TikzEditor::insertCompletion(const QString &completion)
 
 	// remove all options (between <...>) and put cursor at the first option
 	QString insertWord = completion.right(extra);
-	const QRegExp rx(QLatin1String("<[^<>]*>"));
-	const int offset = rx.indexIn(insertWord) - 1; // put cursor at the first option
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    const QRegularExpression rx(QLatin1String("<[^<>]*>"));
+    const int offset = insertWord.indexOf(rx) - 1; // put cursor at the first option
+#else
+    const QRegExp rx(QLatin1String("<[^<>]*>"));
+    const int offset = rx.indexIn(insertWord) - 1; // put cursor at the first option
+#endif
 	insertWord.replace(rx, s_completionPlaceHolder);
 
 	cursor.insertText(insertWord);
@@ -774,7 +786,11 @@ int TikzEditor::lineNumberAreaWidth()
 		++digits;
 	digits = qMax(4, digits) + 1;
 
-	return m_showLineNumberArea ? 3 + fontMetrics().width(QLatin1Char('9')) * digits : 0;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    return m_showLineNumberArea ? 3 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits : 0;
+#else
+    return m_showLineNumberArea ? 3 + fontMetrics().width(QLatin1Char('9')) * digits : 0;
+#endif
 }
 
 void TikzEditor::updateLineNumberAreaWidth()

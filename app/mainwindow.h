@@ -27,6 +27,9 @@
 #include <KXmlGuiWindow>
 #else
 #include <QtCore/QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtCore5Compat/QTextCodec>
+#endif
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtWidgets/QMainWindow>
 #else
@@ -139,7 +142,11 @@ private Q_SLOTS:
 	void updateCompleter();
 	/// Change the codec for the current document
 	/// @param isUserRequest set to true if the user requested the changement (in this case, the application should warn the user -- not implemented yet.).
-  void setCurrentEncoding(QTextCodec* codec /*, bool isUserRequest = false */ );
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    void setCurrentEncoding(QStringConverter::Encoding codec /*, bool isUserRequest = false */ );
+#else
+    void setCurrentEncoding(QTextCodec* codec /*, bool isUserRequest = false */ );
+#endif
 
 private:
 	void createActions();
@@ -230,15 +237,27 @@ private:
 	QPointer<ConfigDialog> m_configDialog;
 
 	QUrl m_currentUrl;
-	QTextCodec* m_currentEncoding;
-	/// If not null, override the encoder (rather than @ref m_currentEncoding)
-	QTextCodec* m_overrideEncoder;
-	/// If not null, override the decoder
-	QTextCodec* m_overrideDecoder;
-	/// True if a BOM must be added to the PGF-file
-	bool m_encoderBom;
-	/// Return the current encoder (m_currentEncoding or another if encoder is overriden).
-	/*virtual*/ QTextCodec* getEncoder() const;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QStringConverter::Encoding m_currentEncoding;
+    /// If not null, override the encoder (rather than @ref m_currentEncoding)
+    std::optional<QStringConverter::Encoding> m_overrideEncoder;
+    /// If not null, override the decoder
+    std::optional<QStringConverter::Encoding> m_overrideDecoder;
+    /// True if a BOM must be added to the PGF-file
+    bool m_encoderBom;
+    /// Return the current encoder (m_currentEncoding or another if encoder is overriden).
+    /*virtual*/ QStringConverter::Encoding getEncoder() const;
+#else
+    QTextCodec* m_currentEncoding;
+    /// If not null, override the encoder (rather than @ref m_currentEncoding)
+    QTextCodec* m_overrideEncoder;
+    /// If not null, override the decoder
+    QTextCodec* m_overrideDecoder;
+    /// True if a BOM must be added to the PGF-file
+    bool m_encoderBom;
+    /// Return the current encoder (m_currentEncoding or another if encoder is overriden).
+    /*virtual*/ QTextCodec* getEncoder() const;
+#endif
 
 	QUrl m_lastUrl;
 	QDateTime m_lastInternalModifiedDateTime;

@@ -19,6 +19,8 @@
 #ifndef KTIKZ_URLCOMPLETION_H
 #define KTIKZ_URLCOMPLETION_H
 
+#include <qglobal.h>
+
 #ifdef KTIKZ_USE_KDE
 #include <KUrlCompletion>
 
@@ -31,7 +33,10 @@ public:
 	}
 };
 #else
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtWidgets/QCompleter>
+#include <QtWidgets/qfilesystemmodel.h>
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtWidgets/QCompleter>
 #include <QtWidgets/QFileSystemModel>
 #else

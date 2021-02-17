@@ -101,7 +101,11 @@ public:
 	File(const QUrl &url, const OpenMode &mode);
 	~File();
 
-	bool open(const QFile::OpenMode &mode = 0);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    bool open(const QFile::OpenMode &mode = defaultModeForOpen);
+#else
+    bool open(const QFile::OpenMode &mode = 0);
+#endif
 	bool close();
 	QFile *file();
 	QString errorString() const;
@@ -131,6 +135,10 @@ private:
 	QString m_localFileName;
 
 	QString m_errorString;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    static const QFile::OpenMode defaultModeForOpen;
+#endif
 };
 
 #endif

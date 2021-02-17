@@ -23,6 +23,9 @@
 
 #include <QtGui/QSyntaxHighlighter>
 #include <QtGui/QTextCharFormat>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QtCore5Compat/QRegExp>
+#endif
 
 /** A simple, incomplete highlighter for LaTeX .log files
  * @author Florian Hackenberger <florian@hackenberger.at>

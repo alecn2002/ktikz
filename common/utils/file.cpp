@@ -239,6 +239,9 @@ File::~File()
  * \b not use QFile::ReadOnly or QFile::WriteOnly at this point!)
  * \return true if successful, false otherwise
  */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+const QFile::OpenMode File::defaultModeForOpen = QFile::NotOpen;
+#endif
 
 bool File::open(const QFile::OpenMode &mode)
 {

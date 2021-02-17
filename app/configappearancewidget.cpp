@@ -115,7 +115,11 @@ void ConfigAppearanceWidget::setItemToolTip(QTableWidgetItem *item, const QFont 
 {
 	const QFontMetrics metrics(font);
 	ui.itemTable->setRowHeight(m_itemHighlighted, metrics.height() + m_itemMargin);
-	if (metrics.width(item->text()) >= ui.itemTable->contentsRect().width() - 30)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    if (metrics.horizontalAdvance(item->text()) >= ui.itemTable->contentsRect().width() - 30)
+#else
+    if (metrics.width(item->text()) >= ui.itemTable->contentsRect().width() - 30)
+#endif
 		item->setToolTip(item->text());
 	else
 		item->setToolTip(QString());

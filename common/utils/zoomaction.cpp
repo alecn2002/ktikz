@@ -21,6 +21,10 @@
 #include "globallocale.h"
 #include "icon.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QRegularExpression>
+#endif
+
 static const qreal s_minZoomFactor = 0.1;
 static const qreal s_maxZoomFactor = 6;
 
@@ -141,5 +145,9 @@ void ZoomAction::setZoomFactor(qreal zoomFactor)
 
 void ZoomAction::setZoomFactor(const QString &zoomFactorText)
 {
-	setZoomFactor(GlobalLocale::readNumber(QString(zoomFactorText).remove(QRegExp(QString(QLatin1String("[^\\d\\%1]*")).arg(GlobalLocale::decimalSymbol())))) / 100.0);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    setZoomFactor(GlobalLocale::readNumber(QString(zoomFactorText).remove(QRegularExpression(QString(QLatin1String("[^\\d\\%1]*")).arg(GlobalLocale::decimalSymbol())))) / 100.0);
+#else
+    setZoomFactor(GlobalLocale::readNumber(QString(zoomFactorText).remove(QRegExp(QString(QLatin1String("[^\\d\\%1]*")).arg(GlobalLocale::decimalSymbol())))) / 100.0);
+#endif
 }

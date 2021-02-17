@@ -3,7 +3,11 @@ DOCUMENTATION_SOURCE_DIR = $${PWD}
 ### Generate and install qhc file
 
 QHCPFILES = $${DOCUMENTATION_SOURCE_DIR}/qtikz.qhcp
+greaterThan(QT_MAJOR_VERSION, 5) {
+updateqhc.name = qhelpgenerator ${QMAKE_FILE_IN}
+} else {
 updateqhc.name = qcollectiongenerator ${QMAKE_FILE_IN}
+}
 updateqhc.input = QHCPFILES
 updateqhc.output = $${DOCUMENTATION_SOURCE_DIR}/${QMAKE_FILE_BASE}.qhc
 updateqhc.commands = $${QCOLLECTIONGENERATORCOMMAND} ${QMAKE_FILE_IN} -o ${QMAKE_FILE_OUT}

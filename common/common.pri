@@ -1,4 +1,5 @@
 greaterThan(QT_MAJOR_VERSION, 4): QT *= widgets printsupport
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
 include($${_PRO_FILE_PWD_}/qmake/findpoppler.pri)
 

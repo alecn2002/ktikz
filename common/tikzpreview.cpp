@@ -18,7 +18,9 @@
 
 #include "tikzpreview.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <poppler-qt6.h>
+#elif QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <poppler-qt5.h>
 #else
 #include <poppler-qt4.h>
@@ -26,7 +28,11 @@
 
 #include <QSettings>
 #include <QApplication>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QScreen>
+#else
 #include <QDesktopWidget>
+#endif
 #include <QGraphicsProxyWidget>
 #include <QMenu>
 #include <QScrollBar>
@@ -93,7 +99,11 @@ void TikzPreview::contextMenuEvent(QContextMenuEvent *event)
 
 QSize TikzPreview::sizeHint() const
 {
-	const int screenWidth = QApplication::desktop()->availableGeometry().width();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    const int screenWidth = QGuiApplication::primaryScreen()->availableGeometry().width();
+#else
+    const int screenWidth = QApplication::desktop()->availableGeometry().width();
+#endif
 	if (screenWidth > 1200)
 		return QSize(500, 400);
 	else if (screenWidth > 1024)
@@ -391,7 +401,11 @@ void TikzPreview::wheelEvent(QWheelEvent *event)
 {
 	if (event->modifiers() == Qt::ControlModifier)
 	{
-		if (event->delta() > 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        if (event->angleDelta().y() > 0)
+#else
+        if (event->delta() > 0)
+#endif
 			zoomIn();
 		else
 			zoomOut();

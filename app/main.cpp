@@ -188,7 +188,11 @@ int main(int argc, char **argv)
 	const QString translationsDirPath = QString::fromLocal8Bit(qgetenv("KTIKZ_TRANSLATIONS_DIR").constData());
 	QTranslator qtTranslator;
 	QTranslator qtikzTranslator;
-	createTranslator(&qtTranslator, QLatin1String("qt"), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    createTranslator(&qtTranslator, QLatin1String("qt"), QLibraryInfo::path(QLibraryInfo::TranslationsPath));
+#else
+    createTranslator(&qtTranslator, QLatin1String("qt"), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+#endif
 	createTranslator(&qtikzTranslator, QLatin1String("qtikz"), translationsDirPath);
 	app.installTranslator(&qtTranslator);
 	app.installTranslator(&qtikzTranslator);
